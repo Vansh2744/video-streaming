@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 interface User {
   email: string;
@@ -12,8 +11,6 @@ interface User {
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { IoMdHome, IoMdTrendingUp, IoMdCloudUpload } from "react-icons/io";
 import { MdWatchLater } from "react-icons/md";

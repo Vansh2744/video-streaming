@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function GET() {
     try {
@@ -21,7 +21,7 @@ export async function GET() {
 
         const user = await prisma.user.findUnique({
             where: {
-                id: (decodedToken as any).id,
+                id: (decodedToken as JwtPayload).id,
             },
         });
 
