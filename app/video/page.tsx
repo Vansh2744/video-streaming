@@ -105,7 +105,7 @@ function Video() {
       }
     };
     getVideos();
-  }, []);
+  }, [title]);
 
   const handleHideVideo = (video: Video) => {
     if (video.id === id) {
@@ -129,7 +129,7 @@ function Video() {
     };
 
     video();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const user = async () => {
@@ -165,7 +165,7 @@ function Video() {
     };
     user();
     getComments();
-  }, [comment]);
+  }, [comment,id]);
 
   const handleWatchlater = async () => {
     try {

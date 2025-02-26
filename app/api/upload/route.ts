@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { decode } from "punycode";
 
 export async function POST(req: Request) {
     try {

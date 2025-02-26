@@ -57,7 +57,7 @@ function UserProfile() {
     };
 
     getUser();
-  }, []);
+  }, [userId]);
 
   if (loading) {
     return (
