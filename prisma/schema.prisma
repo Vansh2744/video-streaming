@@ -18,10 +18,13 @@ model User {
   email       String             @unique
   username    String             @unique
   password    String
+  pic         String             @default("/profile.jpg")
+  videos      Video[]
   likedVideos LikedVideos[]
   watchLater  WatchLaterVideos[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
+  Comment     Comment[]
 }
 
 model Video {
@@ -32,6 +35,9 @@ model Video {
   thumbnail   String?
   views       Int                @default(0)
   likes       Int                @default(0)
+  user        User               @relation(fields: [userId], references: [id])
+  userId      String
+  comments    Comment[]
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   likedBy     LikedVideos[]
@@ -56,4 +62,13 @@ model WatchLaterVideos {
   video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
   @@unique([userId, videoId])
+}
+
+model Comment {
+  id          String @id @default(cuid())
+  userId      String
+  videoId     String
+  description String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video       Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
 }

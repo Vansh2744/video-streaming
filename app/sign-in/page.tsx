@@ -5,12 +5,14 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
@@ -76,7 +78,7 @@ function Signup() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </label>
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="relative input input-bordered flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -90,12 +92,23 @@ function Signup() {
               />
             </svg>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               className="grow"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {showPassword ? (
+              <FaEye
+                className="absolute top-3.5 z-10 cursor-pointer text-white right-5"
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            ) : (
+              <FaEyeSlash
+                className="absolute top-3.5 z-10 cursor-pointer text-white right-5"
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            )}
           </label>
           <button className="btn my-5" type="submit">
             Submit

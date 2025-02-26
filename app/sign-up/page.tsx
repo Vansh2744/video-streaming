@@ -12,6 +12,7 @@ function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -37,19 +38,23 @@ function Signup() {
     }
 
     try {
+      setLoading(true);
       const res = await axios.post("/api/signup", {
         email,
         username,
         password,
       });
       toast.success(res.data.message);
+      setLoading(false);
       router.push("/");
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }
   };
   return (
     <div className="flex flex-col items-center">
+      {loading && <span className="loading loading-spinner loading-lg"></span>}
       <div className="h-[500px] mt-20 flex flex-col sm:gap-10 gap-5 items-center justify-center sm:w-[700px] w-[330px] rounded-xl shadow-xl shadow-slate-500">
         <h1 className="sm:text-4xl text-2xl font-extrabold">Sign Up</h1>
         <form

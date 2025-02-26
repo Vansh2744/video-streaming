@@ -17,20 +17,33 @@ import { useRouter } from "next/navigation";
 function Navbar() {
   const [user, setUser] = useState(null);
   const [dropdown, setDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
       try {
+        setLoading(true);
         const res = await axios.get("/api/getUser");
+        console.log(res);
         setUser(res.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
     getUser();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col h-[700px] items-center justify-center">
+        <span className="loading loading-infinity w-60"></span>
+      </div>
+    );
+  }
 
   const handleSignout = async () => {
     try {
@@ -62,15 +75,19 @@ function Navbar() {
                 </div>
                 <div className="flex items-center gap-2 text-xl hover:scale-105 font-extrabold">
                   <MdWatchLater />
-                  <Link href="/watch-later">Watch Later</Link>
+                  <Link href="/watchlater">Watch Later</Link>
                 </div>
                 <div className="flex items-center gap-2 text-xl hover:scale-105 font-extrabold">
                   <BiSolidLike />
-                  <Link href="/liked-videos">Liked Videos</Link>
+                  <Link href="/likedvideos">Liked Videos</Link>
                 </div>
                 <div className="flex items-center gap-2 text-xl hover:scale-105 font-extrabold">
                   <IoMdCloudUpload />
                   <Link href="/upload">Upload</Link>
+                </div>
+                <div className="flex items-center gap-2 text-xl hover:scale-105 font-extrabold">
+                  <FaUserCircle />
+                  <Link href="/profile">Profile</Link>
                 </div>
                 <div>
                   <FaUserCircle

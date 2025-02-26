@@ -6,22 +6,26 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 export async function GET() {
     try {
         const cookieStore = await cookies();
-
         const token = cookieStore.get("token")?.value;
 
         if (!token) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!);
+        let decodedToken: JwtPayload;
 
-        if (!decodedToken) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        try {
+            decodedToken = jwt.verify(token, process.env.TOKEN_SECRET!) as JwtPayload;
+        } catch (err) {
+            return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
         }
 
         const user = await prisma.user.findUnique({
-            where: {
-                id: (decodedToken as JwtPayload).id,
+            where: { id: decodedToken.id },
+            include: {
+                likedVideos: true,
+                watchLater: true,
+                videos: true,
             },
         });
 
@@ -31,6 +35,7 @@ export async function GET() {
 
         return NextResponse.json({ user });
     } catch (error) {
-        return NextResponse.json({ error }, { status: 500 });
+        console.error("Server error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
