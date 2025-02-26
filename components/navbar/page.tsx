@@ -57,10 +57,10 @@ function Navbar() {
   };
   return (
     <>
-      <div className="w-full py-5 px-10">
+      <div className="w-full py-5 px-10 sm:visible hidden sm:block">
         <nav className="flex justify-between items-center">
           <Link href="/" className="text-3xl text-center text-white font-bold">
-            Video Streaming
+            VibeVid
           </Link>
           <div className="flex gap-10">
             <div className="flex items-center gap-2 text-xl hover:scale-105 font-extrabold">
@@ -112,6 +112,86 @@ function Navbar() {
         </nav>
 
         <Toaster />
+      </div>
+
+      <div className="navbar bg-base-100 sm:hidden visible">
+        <div className="navbar-start">
+          <div className="dropdown">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle"
+            >
+              {user && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h7"
+                  />
+                </svg>
+              )}
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <Link href="/">Home</Link>
+              </li>
+              <li>
+                <Link href="#">Trending</Link>
+              </li>
+              <li>
+                <Link href="/watchlater">Watch Later</Link>
+              </li>
+              <li>
+                <Link href="#">Liked Videos</Link>
+              </li>
+              <li>
+                <Link href="/upload">Upload</Link>
+              </li>
+              <li>
+                <Link href="/profile">Profile</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="navbar-center">
+          <Link href="/" className="btn btn-ghost text-lg">
+            VibeVide
+          </Link>
+        </div>
+        <div className="flex gap-5 ml-2 w-full">
+          {user ? (
+            <>
+              <div>
+                <FaUserCircle
+                  className="relative text-orange-600 h-7 w-7 hover:cursor-pointer"
+                  onClick={() => setDropdown(!dropdown)}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-1 text-md text-orange-600 hover:scale-105 font-extrabold">
+                <FaSignInAlt />
+                <Link href="/sign-in">Sign In</Link>
+              </div>
+              <div className="flex items-center gap-1 text-md text-orange-600 hover:scale-105 font-extrabold">
+                <SiGnuprivacyguard />
+                <Link href="/sign-up">Sign Up</Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
       {dropdown && (
         <div className="absolute top-20 right-5 flex items-center gap-2 hover:scale-105 font-extrabold bg-slate-600 px-4 py-2 rounded-xl">

@@ -38,6 +38,7 @@ function Profile() {
     watchLaterVideos: [],
   });
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const getProfile = async () => {
       try {
@@ -65,7 +66,7 @@ function Profile() {
     <div className="px-10">
       <div className="flex sm:flex-row flex-col sm:gap-20 gap-10 sm:px-10 px-5 py-10">
         <Image
-          src={user?.pic}
+          src={user?.pic ? user.pic : "/profile.jpg"}
           width={100}
           height={100}
           alt="not found"
