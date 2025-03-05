@@ -76,7 +76,7 @@ export default function Home() {
     );
   }
   return (
-    <>
+    <div className="sm:px-10 px-5 sm:py-10 py-5">
       <div className="flex gap-2 items-center">
         <input
           type="text"
@@ -144,6 +144,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

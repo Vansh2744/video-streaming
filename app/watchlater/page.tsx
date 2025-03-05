@@ -47,13 +47,13 @@ function Watchlater() {
     );
   }
   return (
-    <>
+    <div className="sm:px-10 px-5 sm:py-10 py-5">
       <div className="flex gap-2 items-center sm:px-20 px-10 sm:text-5xl text-2xl text-orange-500 font-extrabold sm:mt-10 mt-5">
         <MdWatchLater />
         <h1>Watchlater Videos</h1>
       </div>
-      <hr className="sm:mx-20 mx-10 sm:my-10 my-5" />
-      <div className="grid sm:grid-cols-2 grid-col-1 gap-10 px-10 py-10">
+      <hr className="sm:my-10 my-5" />
+      <div className="grid sm:grid-cols-2 grid-col-1 gap-10">
         {videos.map((video: Video) => (
           <Link
             key={video.id}
@@ -84,7 +84,7 @@ function Watchlater() {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
