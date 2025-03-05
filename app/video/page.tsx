@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, FormEvent } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { AiFillLike } from "react-icons/ai";
 import { useSearchParams } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
@@ -188,7 +188,7 @@ function Video() {
 
   const handleComment = async () => {
     try {
-      const res = await axios.post("/api/comment", {
+      await axios.post("/api/comment", {
         comment,
         userId: user.id,
         videoId: id,

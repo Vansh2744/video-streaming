@@ -31,8 +31,11 @@ export default function Home() {
         const res = await axios.get("/api/getVideos", {
           withCredentials: true,
         });
-        const filteredVideos = res.data.videos.filter((video: Video) =>
-          video.title.toLowerCase().includes(search.toLowerCase())
+        const filteredVideos = res.data.videos.filter(
+          (video: Video) =>
+            video.title.toLowerCase().includes(search.toLowerCase()) ||
+            video.description.toLowerCase().includes(search.toLowerCase()) ||
+            video.user.username.toLowerCase().includes(search.toLowerCase())
         );
         setVideos(filteredVideos);
         setLoading(false);
