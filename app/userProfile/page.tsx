@@ -91,13 +91,6 @@ function UserProfile() {
               pathname: "/video",
               query: {
                 id: video.id,
-                title: video.title,
-                description: video.description,
-                views: video.views,
-                likes: video.likes,
-                url: video.url,
-                thumbnail: video.thumbnail,
-                username: video.user?.username,
                 userId: video.user?.id,
               },
             }}

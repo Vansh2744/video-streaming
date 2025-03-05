@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 export async function POST(req: Request) {
     try {
         const { email, password } = await req.json();
+        const oneMonthInSeconds = 30 * 24 * 60 * 60;
 
         if (!email || !password) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -29,14 +30,14 @@ export async function POST(req: Request) {
         }
 
         const cookieStore = await cookies();
-        const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET!, { expiresIn: '7d' });
+        const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET!, { expiresIn: '30d' });
 
         cookieStore.set({
             name: "token",
             value: token,
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 2592000
+            maxAge: oneMonthInSeconds
         })
 
         return NextResponse.json({ message: "User SignedIn successfully" }, { status: 201 });

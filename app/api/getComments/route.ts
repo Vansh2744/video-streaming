@@ -13,6 +13,9 @@ export async function GET(req: Request) {
 
         const comments = await prisma.comment.findMany(
             {
+                where: {
+                    videoId
+                },
                 include: {
                     user: true
                 }

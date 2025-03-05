@@ -12,8 +12,8 @@ export async function POST(req: Request) {
         const video = await prisma.video.findFirst({
             where: { id },
             include: {
-                user: true
-            }
+                user: true,
+            },
         })
 
         if (!video) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, FormEvent } from "react";
 import { AiFillLike } from "react-icons/ai";
 import { useSearchParams } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
@@ -46,12 +46,6 @@ interface Comment {
 function Video() {
   const params = useSearchParams();
   const id = params.get("id") ?? "";
-  const title = params.get("title") ?? "";
-  const description = params.get("description") ?? "";
-  const likes = params.get("likes") ?? null;
-  const url = params.get("url") ?? "";
-  const thumbnail = params.get("thumbnail") ?? "";
-  const username = params.get("username") ?? "";
   const userId = params.get("userId") ?? "";
 
   const [videos, setVideos] = useState<Video[]>([]);
@@ -61,27 +55,41 @@ function Video() {
     likedVideos: [],
   });
   const [loading, setLoading] = useState(false);
-  const [like, setLike] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-  const [likeLoading, setLikeLoading] = useState(false);
+  const [screenLoading, setScreenLoading] = useState(false);
   const [watchlaterLoading, setWatchlaterLoading] = useState(false);
   const [toggleComment, setToggleComment] = useState(false);
   const [comment, setComment] = useState("");
   const [listComments, setListComments] = useState<Comment[]>([]);
+  const [video, setVideo] = useState<Video>({
+    id: "",
+    title: "",
+    description: "",
+    url: "",
+    thumbnail: "",
+    views: 0,
+    likes: 0,
+    user: {
+      id: "",
+      username: "",
+    },
+  });
+  const [likes, setLikes] = useState(0);
+  const [views, setViews] = useState(0);
 
-  const handleLike = async (likes: number, userId: string, videoId: string) => {
+  const handleLike = async () => {
+    setScreenLoading(true);
     try {
-      setLikeLoading(true);
-      await axios.post("/api/likes", {
-        likes,
-        userId,
-        videoId,
+      const res = await axios.post("/api/likes", {
+        userId: user.id,
+        videoId: video.id,
       });
-      window.location.reload();
-      setLikeLoading(false);
+      setLikes(res.data.video.likes);
+      setIsLiked(res.data.isLiked);
+      setScreenLoading(false);
     } catch (error) {
       console.error(error);
-      setLikeLoading(false);
+      setScreenLoading(false);
     }
   };
 
@@ -93,11 +101,10 @@ function Video() {
         const filteredVideos = res.data.videos.filter((video: Video) =>
           video.description
             .toLowerCase()
-            .includes(title.toLowerCase().trim().split(" ")[0])
+            .includes(video.title.toLowerCase().trim().split(" ")[0])
         );
 
         setVideos(filteredVideos);
-        console.log(res.data);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -105,7 +112,7 @@ function Video() {
       }
     };
     getVideos();
-  }, [title]);
+  }, [video.title]);
 
   const handleHideVideo = (video: Video) => {
     if (video.id === id) {
@@ -115,16 +122,18 @@ function Video() {
 
   useEffect(() => {
     const video = async () => {
-      setLikeLoading(true);
+      setLoading(true);
       try {
         const res = await axios.post("/api/getVideo", {
           id,
         });
-        setLike(res.data.video.likes);
-        setLikeLoading(false);
+        setVideo(res.data.video);
+        setLikes(res.data.video.likes);
+        setViews(res.data.video.views);
+        setLoading(false);
       } catch (error) {
         console.error(error);
-        setLikeLoading(false);
+        setLoading(false);
       }
     };
 
@@ -134,23 +143,19 @@ function Video() {
   useEffect(() => {
     const user = async () => {
       try {
-        setLikeLoading(true);
         const res = await axios.get("/api/getUser");
         setUser(res.data.user);
         if (
           res.data.user.likedVideos.some(
-            (video: likedVideo) => video.videoId === id
+            (likedVideo: likedVideo) => likedVideo.videoId === id
           )
         ) {
           setIsLiked(true);
         }
-        setLikeLoading(false);
       } catch (error) {
         console.error(error);
-        setLikeLoading(false);
       }
     };
-
     const getComments = async () => {
       try {
         const res = await axios.get("/api/getComments", {
@@ -165,7 +170,7 @@ function Video() {
     };
     user();
     getComments();
-  }, [comment,id]);
+  }, [comment, id]);
 
   const handleWatchlater = async () => {
     try {
@@ -188,10 +193,25 @@ function Video() {
         userId: user.id,
         videoId: id,
       });
-      console.log(res);
       setComment("");
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleVideoEnd = async () => {
+    try {
+      setScreenLoading(true);
+      const res = await axios.post("/api/getVideo", { id });
+      await axios.post("/api/updateViews", {
+        updatedViews: res.data.video.views + 1,
+        id,
+      });
+      setViews(res.data.video.views);
+      setScreenLoading(false);
+    } catch (error) {
+      console.error(error);
+      setScreenLoading(false);
     }
   };
 
@@ -206,7 +226,13 @@ function Video() {
   return (
     <div className="sm:px-20 px-10 py-10 flex sm:flex-row flex-col sm:gap-10 gap-20">
       <div className="bg-black flex flex-col sm:gap-10 gap-5 h-full min-w-screen">
-        <video src={url} controls autoPlay poster={thumbnail}></video>
+        <video
+          src={video.url || undefined}
+          controls
+          autoPlay
+          poster={video.thumbnail}
+          onEnded={handleVideoEnd}
+        ></video>
         <div className="flex items-center gap-20 px-5">
           <div>
             <Link
@@ -219,24 +245,27 @@ function Video() {
             >
               <FaUserCircle className="sm:text-5xl text-3xl text-orange-500" />
             </Link>
-            <h1 className="font-extrabold">{username}</h1>
+            <h1 className="font-extrabold">{video.user.username}</h1>
           </div>
           <div className="flex flex-col gap-2 pb-2">
             <h1 className="sm:text-2xl text-lg font-bold text-orange-600">
-              {title}
+              {video.title}
             </h1>
-            <p className="sm:text-lg text-sm">{description}</p>
+            <p className="sm:text-lg text-sm">{video.description}</p>
           </div>
         </div>
         <div className="flex sm:gap-10 gap-5 px-5 pb-5">
+          <div>
+            <p className="sm:text-lg text-sm">{views} views</p>
+          </div>
           <div className="flex gap-2 items-center sm:text-3xl text-lg">
             <AiFillLike
               className={`hover:cursor-pointer ${
                 isLiked ? "text-blue-500" : ""
               }`}
-              onClick={() => handleLike(Number(likes) + 1, user.id, id)}
+              onClick={handleLike}
             />
-            <p>{like}</p>
+            <p>{likes}</p>
           </div>
           <div
             className="flex gap-2 sm:text-lg text-sm items-center font-extrabold bg-orange-600 px-2 py-1 rounded-full hover:cursor-pointer"
@@ -251,8 +280,9 @@ function Video() {
               onClick={() => setToggleComment((prev) => !prev)}
             />
           </div>
+          <p>{}</p>
         </div>
-        {(watchlaterLoading || likeLoading) && (
+        {(watchlaterLoading || screenLoading) && (
           <div className="flex flex-col items-center justify-center">
             <span className="loading loading-infinity w-10"></span>
           </div>
@@ -304,13 +334,6 @@ function Video() {
               pathname: "/video",
               query: {
                 id: video.id,
-                title: video.title,
-                description: video.description,
-                views: video.views,
-                likes: video.likes,
-                url: video.url,
-                thumbnail: video.thumbnail,
-                username: video.user?.username,
               },
             }}
           >
