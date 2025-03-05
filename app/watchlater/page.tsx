@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { MdWatchLater } from "react-icons/md";
 
 interface Video {
   id: string;
@@ -46,37 +47,44 @@ function Watchlater() {
     );
   }
   return (
-    <div className="grid sm:grid-cols-2 grid-col-1 gap-10 px-10 py-10">
-      {videos.map((video: Video) => (
-        <Link
-          key={video.id}
-          href={{
-            pathname: "/video",
-            query: {
-              id: video.id,
-              title: video.title,
-              description: video.description,
-              views: video.views,
-              likes: video.likes,
-              url: video.url,
-              thumbnail: video.thumbnail,
-              username: video.user?.username,
-              userId: video.user?.id,
-            },
-          }}
-        >
-          <div className="bg-black flex flex-col gap-5 shadow-md shadow-cyan-500 hover:shadow-lg hover:shadow-cyan-400">
-            <video src={video.url} className="w-full"></video>
-            <div className="sm:px-10 px-5 sm:pb-5 pb-3">
-              <p className="sm:text-2xl text-lg font-bold text-orange-600">
-                {video.title}
-              </p>
-              <p className="sm:text-lg text-sm">{video.description}</p>
+    <>
+      <div className="flex gap-2 items-center sm:px-20 px-10 sm:text-5xl text-2xl text-orange-500 font-extrabold sm:mt-10 mt-5">
+        <MdWatchLater />
+        <h1>Watchlater Videos</h1>
+      </div>
+      <hr className="sm:mx-20 mx-10 sm:my-10 my-5" />
+      <div className="grid sm:grid-cols-2 grid-col-1 gap-10 px-10 py-10">
+        {videos.map((video: Video) => (
+          <Link
+            key={video.id}
+            href={{
+              pathname: "/video",
+              query: {
+                id: video.id,
+                title: video.title,
+                description: video.description,
+                views: video.views,
+                likes: video.likes,
+                url: video.url,
+                thumbnail: video.thumbnail,
+                username: video.user?.username,
+                userId: video.user?.id,
+              },
+            }}
+          >
+            <div className="bg-black flex flex-col gap-5 shadow-md shadow-cyan-500 hover:shadow-lg hover:shadow-cyan-400">
+              <video src={video.url} className="w-full"></video>
+              <div className="sm:px-10 px-5 sm:pb-5 pb-3">
+                <p className="sm:text-2xl text-lg font-bold text-orange-600">
+                  {video.title}
+                </p>
+                <p className="sm:text-lg text-sm">{video.description}</p>
+              </div>
             </div>
-          </div>
-        </Link>
-      ))}
-    </div>
+          </Link>
+        ))}
+      </div>
+    </>
   );
 }
 
