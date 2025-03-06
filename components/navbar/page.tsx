@@ -166,7 +166,7 @@ function Navbar() {
         </div>
         <div className="navbar-center">
           <Link href="/" className="btn btn-ghost text-2xl">
-            VibeVide
+            VibeVid
           </Link>
         </div>
         <div className="flex gap-5 ml-2 w-full">
